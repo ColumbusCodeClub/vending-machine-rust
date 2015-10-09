@@ -3,9 +3,14 @@
 mod test;
 
 struct VendingMachine {
-    coin: u32,
     coin_return: Vec<u32>,
     coins: Vec<u32>,
+}
+
+enum Item { //TODO: we started refactoring products to use enums, but didn't finish
+    Pop (i32),
+    Chips (i32),
+    Candy (i32)
 }
 
 impl VendingMachine {
@@ -15,14 +20,14 @@ impl VendingMachine {
 
     fn new() -> Self {
         VendingMachine {
-            coin: 0,
             coin_return: vec![],
             coins: vec![],
         }
     }
     fn display(&self) -> String {
-        if self.coin != 0 {
-            format!("{:.2}", self.coin as f32 / 100.0)
+        if self.coins.len() > 0 {
+            let x = self.coins.iter().fold(0, |sum, &val|{sum+val});
+            format!("{:.2}", x as f32 / 100.0)
         } else {
             "INSERT COIN".to_string()
         }
@@ -30,7 +35,6 @@ impl VendingMachine {
 
     fn insert_coin(&mut self, coin: u32) {
         if coin != 1 {
-            self.coin += coin;
             self.coins.push(coin)
         }
         else {
@@ -39,11 +43,17 @@ impl VendingMachine {
     }
 
     fn press_coin_return(&mut self) {
-        if self.coin > 0 {
             for coin in self.coins.clone().iter() {
                 self.coin_return.push(*coin);
             }
-            self.coin = 0
-        }
+            self.coins.clear();
+    }
+
+    fn select_product( &mut self, product:&'static str) -> &'static str{
+
+
+        self.coins.clear();
+
+         product
     }
 }
