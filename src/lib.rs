@@ -2,15 +2,25 @@
 #[cfg(test)]
 mod test;
 
+// TODO: refactor to use tokens instead of u32 "coins"
 struct VendingMachine {
     coin_return: Vec<u32>,
     coins: Vec<u32>,
+    token_return: Vec<Token>,
+    tokens: Vec<Token>,
 }
 
-enum Item { //TODO: we started refactoring products to use enums, but didn't finish
-    Pop (i32),
-    Chips (i32),
-    Candy (i32)
+#[derive(PartialEq, Debug)]
+enum Item {
+    Pop,
+    Chips,
+    Candy,
+}
+
+struct Token {
+    diameter: f64,
+    width: f64,
+    weight: f64,
 }
 
 impl VendingMachine {
@@ -22,6 +32,8 @@ impl VendingMachine {
         VendingMachine {
             coin_return: vec![],
             coins: vec![],
+            token_return: vec![],
+            tokens: vec![],
         }
     }
     fn display(&self) -> String {
@@ -31,6 +43,17 @@ impl VendingMachine {
         } else {
             "INSERT COIN".to_string()
         }
+    }
+
+    fn insert_token(&mut self, token: Token) {
+        match Self::is_valid_coin(&token) {
+            true => self.tokens.push(token),
+            false => self.token_return.push(token),
+        }
+    }
+
+    fn is_valid_coin(token: &Token) -> bool {
+        token.width > 1.0 && token.diameter > 1.0 && token.weight > 1.0
     }
 
     fn insert_coin(&mut self, coin: u32) {
@@ -43,17 +66,15 @@ impl VendingMachine {
     }
 
     fn press_coin_return(&mut self) {
-            for coin in self.coins.clone().iter() {
-                self.coin_return.push(*coin);
+            for &coin in self.coins.iter() {
+                self.coin_return.push(coin);
             }
             self.coins.clear();
     }
 
-    fn select_product( &mut self, product:&'static str) -> &'static str{
-
-
+    #[allow(unused_variables)]
+    fn select_product(&mut self, location_id: u32) -> Item {
         self.coins.clear();
-
-         product
+        Item::Pop
     }
 }

@@ -1,4 +1,5 @@
 use super::VendingMachine;
+use super::Item;
 
 #[test]
 fn it_accepts_coins() {
@@ -77,6 +78,7 @@ fn it_should_vend_when_enough_money_is_inserted(){
     vm.insert_coin(25);
     vm.insert_coin(25);
     vm.insert_coin(25);
-    vm.select_product("cola");
+    let item = vm.select_product(2);
     assert_eq!(vm.coin_return(), vec![]);
+    assert_eq!(item, Item::Pop);
 }
