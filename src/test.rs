@@ -1,5 +1,23 @@
 use super::VendingMachine;
+use super::Token;
 use super::Item;
+use super::INSERT_COIN_MSG;
+
+const DIME: Token = Token {
+    diameter: 17.9,
+    weight: 2.268,
+    width: 1.35,
+};
+const NICKLE: Token = Token {
+    diameter: 21.21,
+    weight: 5.0,
+    width: 1.95,
+};
+const PENNY: Token = Token {
+    diameter: 19.05,
+    weight: 2.5,
+    width: 1.52,
+};
 
 #[test]
 fn it_accepts_coins() {
@@ -81,4 +99,27 @@ fn it_should_vend_when_enough_money_is_inserted(){
     let item = vm.select_product(2);
     assert_eq!(vm.coin_return(), vec![]);
     assert_eq!(item, Item::Pop);
+}
+
+#[test]
+fn insert_token_accepts_nickle() {
+    let mut vm = VendingMachine::new();
+    vm.insert_token(NICKLE);
+    assert_eq!(vm.display(), "0.05");
+}
+
+#[test]
+fn insert_token_accepts_dime() {
+    let mut vm = VendingMachine::new();
+    vm.insert_token(DIME);
+    assert_eq!(vm.display(), "0.10");
+}
+
+
+#[test]
+fn insert_token_rejects_penny() {
+    let mut vm = VendingMachine::new();
+    vm.insert_token(PENNY);
+    assert_eq!(vm.display(), INSERT_COIN_MSG);
+    // assert_eq!(vm.token_return(), vec![PENNY]);
 }

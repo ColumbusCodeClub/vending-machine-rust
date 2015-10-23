@@ -2,7 +2,8 @@
 #[cfg(test)]
 mod test;
 
-// TODO: refactor to use tokens instead of u32 "coins"
+static INSERT_COIN_MSG: &'static str = "INSERT COIN";
+
 struct VendingMachine {
     coin_return: Vec<u32>,
     coins: Vec<u32>,
@@ -41,19 +42,18 @@ impl VendingMachine {
             let x = self.coins.iter().fold(0, |sum, &val|{sum+val});
             format!("{:.2}", x as f32 / 100.0)
         } else {
-            "INSERT COIN".to_string()
+            INSERT_COIN_MSG.to_string()
         }
     }
 
     fn insert_token(&mut self, token: Token) {
-        match Self::is_valid_coin(&token) {
-            true => self.tokens.push(token),
-            false => self.token_return.push(token),
+        if token.weight < 2.3 {
+            self.insert_coin(10)
+        } else {
+            if token.weight > 2.7 {
+                self.insert_coin(5)
+            }
         }
-    }
-
-    fn is_valid_coin(token: &Token) -> bool {
-        token.width > 1.0 && token.diameter > 1.0 && token.weight > 1.0
     }
 
     fn insert_coin(&mut self, coin: u32) {
