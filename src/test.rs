@@ -18,6 +18,12 @@ const PENNY: Token = Token {
     weight: 2.5,
     width: 1.52,
 };
+const QUARTER: Token = Token {
+    diameter: 24.26,
+    weight: 5.670,
+    width: 1.75,
+};
+
 
 #[test]
 fn it_accepts_coins() {
@@ -121,5 +127,28 @@ fn insert_token_rejects_penny() {
     let mut vm = VendingMachine::new();
     vm.insert_token(PENNY);
     assert_eq!(vm.display(), INSERT_COIN_MSG);
-    // assert_eq!(vm.token_return(), vec![PENNY]);
+    assert_eq!(vm.token_return(), vec![PENNY]);
+}
+
+#[test]
+fn insert_token_accepts_quarter(){
+    let mut vm = VendingMachine::new();
+    vm.insert_token(QUARTER);
+    assert_eq!(vm.display(), "0.25");
+
+}
+
+#[test]
+fn two_of_exactly_the_same_token_should_be_equal() {
+    let t1 = PENNY;
+    let t2 = PENNY;
+    assert_eq!(t1, t2);
+}
+
+#[test]
+fn two_approximately_same_diameter_tokens_should_be_equal() {
+    let mut t1 = PENNY;
+    t1.diameter += 0.0001;
+    let t2 = PENNY;
+    assert_eq!(t1, t2);
 }

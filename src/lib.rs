@@ -18,15 +18,26 @@ enum Item {
     Candy,
 }
 
+#[derive(Debug, Clone)]
 struct Token {
     diameter: f64,
     width: f64,
     weight: f64,
 }
 
+impl PartialEq for Token {
+    fn eq(&self, other: &Token) -> bool {
+        (self.diameter - other.diameter).abs() <= 0.0001
+    }
+}
+
 impl VendingMachine {
     fn coin_return(&self) -> Vec<u32> {
         self.coin_return.clone()
+    }
+
+    fn token_return(&self) -> Vec<Token> {
+        self.token_return.clone()
     }
 
     fn new() -> Self {
@@ -49,10 +60,12 @@ impl VendingMachine {
     fn insert_token(&mut self, token: Token) {
         if token.weight < 2.3 {
             self.insert_coin(10)
-        } else {
-            if token.weight > 2.7 {
-                self.insert_coin(5)
-            }
+        } else  if token.weight > 5.0 {
+            self.insert_coin(25)
+        } else if token.weight > 2.7 {
+            self.insert_coin(5)
+        } else{
+            self.token_return.push(token)
         }
     }
 
